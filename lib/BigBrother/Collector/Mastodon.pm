@@ -19,6 +19,7 @@ sub run {
             my $event = $decoded_frame->{event};
             return if $event ne 'update';
             my $post = decode_json encode_utf8 $decoded_frame->{payload};
+            return if $post->{visibility} ne 'private' and $self->target->{private_only};
             if ($post->{account}{acct} eq $self->target->{acct}) {
                 BigBrother::Publisher::Discord->new(
                     webhook_url => $self->settings->{publishers}{webhook_url}
