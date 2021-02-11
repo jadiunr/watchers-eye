@@ -1,0 +1,18 @@
+targets:
+- kind: mastodon
+  label: someuser
+  domain: example.com
+  acct: user@example.com
+  credentials:
+    token: xxxxxxxx
+- kind: twitter
+  label:
+  credentials:
+    ck:
+    cs:
+    at:
+    ats:
+
+publishers:
+  kind: discord
+  webhook_url:
