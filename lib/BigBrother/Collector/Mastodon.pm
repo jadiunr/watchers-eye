@@ -5,6 +5,7 @@ use IO::Async::Loop;
 use Net::Async::WebSocket::Client;
 use JSON::XS;
 use Encode 'encode_utf8';
+use feature 'say';
 
 has settings => (is => 'ro');
 has target => (is => 'ro');
@@ -13,7 +14,6 @@ sub run {
     my $self = shift;
     my $ws = Net::Async::WebSocket::Client->new(
         on_text_frame => sub {
-            print "hoge\n";
             my $frame = $_[1];
             my $decoded_frame = decode_json encode_utf8 $frame;
             my $event = $decoded_frame->{event};
@@ -40,9 +40,9 @@ sub run {
             "/api/v1/streaming?access_token=".
             $self->target->{credentials}{token}.
             "&stream=user"
-    )->then(
-        print "Mastodon WebSocket connected.\n";
-    )->get;
+    )->then(sub {
+        say "Mastodon WebSocket connected.";
+    })->get;
 
     $loop->run;
 }
