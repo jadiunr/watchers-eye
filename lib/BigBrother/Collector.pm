@@ -1,6 +1,7 @@
 package BigBrother::Collector;
 use Moo;
 use BigBrother::Collector::Mastodon;
+use BigBrother::Collector::Twitter;
 
 has settings => (is => 'ro');
 has target_label => (is => 'ro');
@@ -12,6 +13,11 @@ sub run {
 
     if ($target->{kind} eq 'mastodon') {
         $collector = BigBrother::Collector::Mastodon->new(
+            settings => $self->settings,
+            target => $target
+        );
+    } elsif ($target->{kind} eq 'twitter') {
+        $collector = BigBrother::Collector::Twitter->new(
             settings => $self->settings,
             target => $target
         );

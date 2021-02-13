@@ -10,20 +10,26 @@ use feature 'say';
 has webhook_url => (is => 'ro');
 has furl => (is => 'ro', default => sub {Furl->new});
 
+# $post: Hash Reference
+#   ->{display_name}
+#   ->{screen_name}
+#   ->{avatar_url}
+#   ->{content}
+#   ->{media_attachments}: Array Reference
+#     ->{url}
 sub publish {
     my ($self, $post) = @_;
 
-    say encode_utf8 $post->{account}{display_name}.' ('.$post->{account}{acct}.')';
+    say encode_utf8 $post->{display_name}.' ('.$post->{screen_name}.')';
     say encode_utf8 $post->{content};
-    say encode_utf8 $post->{created_at};
 
     $self->furl->post(
         $self->webhook_url,
         [],
         [
-            avatar_url => encode_utf8($post->{account}{avatar}),
+            avatar_url => encode_utf8($post->{avatar_url}),
             content => encode_utf8($post->{content}),
-            username => encode_utf8($post->{account}{display_name} . " ($post->{account}{acct})")
+            username => encode_utf8($post->{display_name} . " ($post->{screen_name})")
         ]
     );
 
@@ -39,9 +45,9 @@ sub publish {
                 $self->webhook_url,
                 'Content-Type' => 'multipart/form-data',
                 'Content' => [
-                    avatar_url => encode_utf8($post->{account}{avatar}),
+                    avatar_url => encode_utf8($post->{avatar_url}),
                     file => [$tmpfile],
-                    username => encode_utf8($post->{account}{display_name} . " ($post->{account}{acct})")
+                    username => encode_utf8($post->{display_name} . " ($post->{screen_name})")
                 ]
             ));
         }

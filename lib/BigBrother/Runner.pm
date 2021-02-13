@@ -1,12 +1,12 @@
 package BigBrother::Runner;
 use Moo;
 use BigBrother::Collector;
-use YAML::Tiny;
+use YAML::XS 'LoadFile';
 
 has target_label => (is => 'ro');
 has settings => (
     is => 'ro',
-    default => sub { YAML::Tiny->read('./settings.yml')->[0] }
+    default => sub { LoadFile "./settings.yml" }
 );
 
 sub run {

@@ -9,6 +9,12 @@ use feature 'say';
 
 has settings => (is => 'ro');
 has target => (is => 'ro');
+has publisher => (is => 'ro', lazy => 1, default => sub {
+    my $self = shift;
+    BigBrother::Publisher::Discord->new(
+        webhook_url => $self->settings->{publishers}{webhook_url}
+    );
+});
 
 sub run {
     my $self = shift;
@@ -21,14 +27,18 @@ sub run {
             my $post = decode_json encode_utf8 $decoded_frame->{payload};
             return if $post->{visibility} ne 'private' and $self->target->{private_only};
             if ($post->{account}{acct} eq $self->target->{acct}) {
-                BigBrother::Publisher::Discord->new(
-                    webhook_url => $self->settings->{publishers}{webhook_url}
-                )->publish($post);
+                $self->publisher->publish({
+                    display_name => $post->{account}{display_name},
+                    screen_name => $post->{account}{acct},
+                    avatar_url => $post->{account}{avatar},
+                    content => $post->{content},
+                    media_attachments => $post->{media_attachments}
+                });
             }
         },
         on_ping_frame => sub {
-            my $self = shift;
-            $self->send_pong_frame->get;
+            my ($self, $bytes) = @_;
+            $self->send_pong_frame($bytes)->get;
         }
     );
 
