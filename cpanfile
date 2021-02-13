@@ -8,6 +8,7 @@ requires 'IO::Async::SSL';
 requires 'HTTP::Request::Common';
 requires 'AnyEvent';
 requires 'Twitter::API';
+requires 'HTML::Entities';
 
 on 'develop' => sub {
   requires 'Pry';

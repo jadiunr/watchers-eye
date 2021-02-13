@@ -6,6 +6,7 @@ use Net::Async::WebSocket::Client;
 use JSON::XS;
 use Encode 'encode_utf8';
 use feature 'say';
+use HTML::Entities 'decode_entities';
 
 has settings => (is => 'ro');
 has target => (is => 'ro');
@@ -26,6 +27,11 @@ sub run {
             return if $event ne 'update';
             my $post = decode_json encode_utf8 $decoded_frame->{payload};
             return if $post->{visibility} ne 'private' and $self->target->{private_only};
+
+            $post->{content} =~ s/<(br|br \/|\/p)>/\n/g;
+            $post->{content} =~ s/<(".*?"|'.*?'|[^'"])*?>//g;
+            $post->{content} = decode_entities($post->{content});
+
             if ($post->{account}{acct} eq $self->target->{acct}) {
                 $self->publisher->publish({
                     display_name => $post->{account}{display_name},
