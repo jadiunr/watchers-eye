@@ -2,6 +2,7 @@ package BigBrother::Collector;
 use Moo;
 use BigBrother::Collector::Mastodon;
 use BigBrother::Collector::Twitter;
+use BigBrother::Collector::Misskey;
 
 has settings => (is => 'ro');
 has target_label => (is => 'ro');
@@ -21,6 +22,11 @@ sub run {
             settings => $self->settings,
             target => $target
         );
+    } elsif ($target->{kind} eq 'misskey') {
+        $collector = BigBrother::Collector::Misskey->new(
+            settings => $self->settings,
+            target => $target
+        )
     } else {
         die "Unsupported service kind.\n";
     }
