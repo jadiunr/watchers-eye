@@ -7,10 +7,9 @@ use File::Basename 'fileparse';
 use HTTP::Request::Common;
 use feature 'say';
 
-has webhook_url => (is => 'ro');
 has furl => (is => 'ro', default => sub {Furl->new});
 
-# $post: Hash Reference
+# $status: Hash Reference
 #   ->{display_name}
 #   ->{screen_name}
 #   ->{avatar_url}
@@ -18,23 +17,20 @@ has furl => (is => 'ro', default => sub {Furl->new});
 #   ->{media_attachments}: Array Reference
 #     ->{url}
 sub publish {
-    my ($self, $post) = @_;
-
-    say encode_utf8 $post->{display_name}.' ('.$post->{screen_name}.')';
-    say encode_utf8 $post->{content};
+    my ($self, $webhook_url, $status) = @_;
 
     $self->furl->post(
-        $self->webhook_url,
+        $webhook_url,
         [],
         [
-            avatar_url => encode_utf8($post->{avatar_url}),
-            content => encode_utf8($post->{content}),
-            username => encode_utf8($post->{display_name} . " ($post->{screen_name})")
+            avatar_url => encode_utf8($status->{avatar_url}),
+            content => encode_utf8($status->{content}),
+            username => encode_utf8($status->{display_name} . " ($status->{screen_name})")
         ]
     );
 
-    if (@{$post->{media_attachments}}) {
-        for my $media_attachment (@{$post->{media_attachments}}) {
+    if (@{$status->{media_attachments}}) {
+        for my $media_attachment (@{$status->{media_attachments}}) {
             say $media_attachment->{url};
             my $ext = (fileparse $media_attachment->{url}, qr/\..*$/)[2];
             my $binary = $self->furl->get($media_attachment->{url});
@@ -45,9 +41,9 @@ sub publish {
                 $self->webhook_url,
                 'Content-Type' => 'multipart/form-data',
                 'Content' => [
-                    avatar_url => encode_utf8($post->{avatar_url}),
+                    avatar_url => encode_utf8($status->{avatar_url}),
                     file => [$tmpfile],
-                    username => encode_utf8($post->{display_name} . " ($post->{screen_name})")
+                    username => encode_utf8($status->{display_name} . " ($status->{screen_name})")
                 ]
             ));
         }

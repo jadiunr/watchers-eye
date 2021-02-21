@@ -7,11 +7,11 @@ use JSON::XS;
 use Encode 'encode_utf8';
 use feature 'say';
 
-has settings => (is => 'ro');
 has target => (is => 'ro');
+has cb => (is => 'ro');
 has statuses => (is => 'rw');
 has since_id => (is => 'rw');
-has tw => (is => 'ro', lazy => 1, default => sub {
+has twitter => (is => 'ro', lazy => 1, default => sub {
     my $self = shift;
     Twitter::API->new_with_traits(
         traits              => 'Enchilada',
@@ -21,27 +21,21 @@ has tw => (is => 'ro', lazy => 1, default => sub {
         access_token_secret => $self->target->{credentials}{access_token_secret}
     );
 });
-has publisher => (is => 'ro', lazy => 1, default => sub {
-    my $self = shift;
-    BigBrother::Publisher::Discord->new(
-        webhook_url => $self->settings->{publishers}{webhook_url}
-    );
-});
 
 sub run {
     my $self = shift;
 
-    $self->statuses($self->tw->user_timeline({
+    $self->statuses($self->twitter->user_timeline({
         user_id => $self->target->{account_id}
     }));
     $self->since_id($self->statuses->[0]{id});
 
     my $cv = AnyEvent->condvar;
-    my $t; $t = AnyEvent->timer(
+    our $t; $t = AnyEvent->timer(
         after => 0,
         interval => 5,
         cb => sub {
-            $self->statuses($self->tw->user_timeline({
+            $self->statuses($self->twitter->user_timeline({
                 user_id => $self->target->{account_id},
                 since_id => $self->since_id
             }));
@@ -49,7 +43,7 @@ sub run {
             if (@{$self->statuses}) {
                 for my $status (@{$self->statuses}) {
                     my $media_attachments = [map { +{ url => $_->{media_url_https} } } @{$status->{extended_entities}{media}}];
-                    $self->publisher->publish({
+                    $self->cb->({
                         display_name => $status->{user}{name},
                         screen_name  => $status->{user}{screen_name}.'@twitter.com',
                         avatar_url   => $status->{user}{profile_image_url_https},
@@ -61,8 +55,8 @@ sub run {
             }
         }
     );
-    say 'Twitter Collector: Start.';
-    $cv->recv;
+
+    return $cv;
 }
 
 1;

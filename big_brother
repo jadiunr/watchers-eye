@@ -4,8 +4,6 @@ use strict;
 use warnings;
 use BigBrother::Runner;
 
-my $bb = BigBrother::Runner->new(
-    target_label => $ARGV[0]
-);
+my $bb = BigBrother::Runner->new;
 
 $bb->run;

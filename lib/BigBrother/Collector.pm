@@ -4,34 +4,33 @@ use BigBrother::Collector::Mastodon;
 use BigBrother::Collector::Twitter;
 use BigBrother::Collector::Misskey;
 
-has settings => (is => 'ro');
-has target_label => (is => 'ro');
+has target => (is => 'ro');
+has cb => (is => 'ro');
 
 sub run {
     my $self = shift;
-    my $target = [grep {$_->{label} eq $self->target_label} @{$self->settings->{targets}}]->[0];
     my $collector;
 
-    if ($target->{kind} eq 'mastodon') {
+    if ($self->target->{kind} eq 'mastodon') {
         $collector = BigBrother::Collector::Mastodon->new(
-            settings => $self->settings,
-            target => $target
+            target => $self->target,
+            cb => $self->cb
         );
-    } elsif ($target->{kind} eq 'twitter') {
+    } elsif ($self->target->{kind} eq 'twitter') {
         $collector = BigBrother::Collector::Twitter->new(
-            settings => $self->settings,
-            target => $target
+            target => $self->target,
+            cb => $self->cb
         );
-    } elsif ($target->{kind} eq 'misskey') {
+    } elsif ($self->target->{kind} eq 'misskey') {
         $collector = BigBrother::Collector::Misskey->new(
-            settings => $self->settings,
-            target => $target
-        )
+            target => $self->target,
+            cb => $self->cb
+        );
     } else {
         die "Unsupported service kind.\n";
     }
 
-    $collector->run;
+    return $collector->run;
 }
 
 1;
