@@ -1,5 +1,6 @@
 package BigBrother::Publisher::Discord;
 use Moo;
+use utf8;
 use Furl;
 use Encode 'encode_utf8';
 use File::Temp 'tempfile';

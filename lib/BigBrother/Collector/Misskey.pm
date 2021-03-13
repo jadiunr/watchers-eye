@@ -1,5 +1,6 @@
 package BigBrother::Collector::Misskey;
 use Moo;
+use utf8;
 use AnyEvent::WebSocket::Client;
 use JSON::XS;
 use Encode 'encode_utf8';

@@ -1,5 +1,6 @@
 package BigBrother::Publisher;
 use Moo;
+use utf8;
 use BigBrother::Publisher::Discord;
 use Furl;
 use Encode 'encode_utf8';

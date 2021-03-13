@@ -1,5 +1,6 @@
 package BigBrother::Collector;
 use Moo;
+use utf8;
 use BigBrother::Collector::Mastodon;
 use BigBrother::Collector::Twitter;
 use BigBrother::Collector::Misskey;

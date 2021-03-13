@@ -1,5 +1,6 @@
 package BigBrother::Collector::Mastodon;
 use Moo;
+use utf8;
 use AnyEvent::WebSocket::Client;
 use JSON::XS;
 use Encode 'encode_utf8';
@@ -31,7 +32,7 @@ sub run {
             my ($connection, $message) = @_;
             my $body = decode_json $message->{body};
             return if $body->{event} ne 'update';
-            my $status = decode_json $body->{payload};
+            my $status = decode_json(encode_utf8 $body->{payload});
             return if $status->{visibility} ne 'private' and $self->target->{private_only};
 
             $status->{content} =~ s/<(br|br \/|\/p)>/\n/g;
@@ -49,7 +50,14 @@ sub run {
             }
         });
 
+        $connection->on(parse_error => sub {
+            my ($connection, $message) = @_;
+            say $message;
+        });
+
         $connection->on(finish => sub {
+            my $connection = shift;
+            say $connection->close_error;
             $self->connection->close;
             $self->run;
         });

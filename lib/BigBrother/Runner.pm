@@ -1,5 +1,6 @@
 package BigBrother::Runner;
 use Moo;
+use utf8;
 use BigBrother::Collector;
 use BigBrother::Publisher;
 use YAML::XS 'LoadFile';

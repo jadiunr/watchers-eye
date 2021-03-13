@@ -1,5 +1,6 @@
 package BigBrother::Collector::Twitter;
 use Moo;
+use utf8;
 use AnyEvent;
 use Twitter::API;
 use BigBrother::Publisher::Discord;
