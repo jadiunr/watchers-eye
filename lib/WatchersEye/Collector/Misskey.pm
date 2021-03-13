@@ -1,4 +1,4 @@
-package BigBrother::Collector::Misskey;
+package WatchersEye::Collector::Misskey;
 use Moo;
 use utf8;
 use AnyEvent::WebSocket::Client;
@@ -31,7 +31,7 @@ sub run {
             type => 'connect',
             body => {
                 channel => 'homeTimeline',
-                id => 'big-brother'
+                id => 'watchers-eye'
             }
         };
         $connection->send(encode_json $request);

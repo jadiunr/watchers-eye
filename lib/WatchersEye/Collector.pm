@@ -1,9 +1,9 @@
-package BigBrother::Collector;
+package WatchersEye::Collector;
 use Moo;
 use utf8;
-use BigBrother::Collector::Mastodon;
-use BigBrother::Collector::Twitter;
-use BigBrother::Collector::Misskey;
+use WatchersEye::Collector::Mastodon;
+use WatchersEye::Collector::Twitter;
+use WatchersEye::Collector::Misskey;
 
 has target => (is => 'ro');
 has cb => (is => 'ro');
@@ -13,17 +13,17 @@ sub run {
     my $collector;
 
     if ($self->target->{kind} eq 'mastodon') {
-        $collector = BigBrother::Collector::Mastodon->new(
+        $collector = WatchersEye::Collector::Mastodon->new(
             target => $self->target,
             cb => $self->cb
         );
     } elsif ($self->target->{kind} eq 'twitter') {
-        $collector = BigBrother::Collector::Twitter->new(
+        $collector = WatchersEye::Collector::Twitter->new(
             target => $self->target,
             cb => $self->cb
         );
     } elsif ($self->target->{kind} eq 'misskey') {
-        $collector = BigBrother::Collector::Misskey->new(
+        $collector = WatchersEye::Collector::Misskey->new(
             target => $self->target,
             cb => $self->cb
         );

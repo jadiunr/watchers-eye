@@ -1,4 +1,4 @@
-package BigBrother::Publisher::Discord;
+package WatchersEye::Publisher::Discord;
 use Moo;
 use utf8;
 use Furl;

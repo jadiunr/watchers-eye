@@ -5,8 +5,8 @@ use warnings;
 use utf8;
 use FindBin;
 use lib "$FindBin::Bin/lib";
-use BigBrother::Runner;
+use WatchersEye::Runner;
 
-my $bb = BigBrother::Runner->new;
+my $we = WatchersEye::Runner->new;
 
-$bb->run;
+$we->run;

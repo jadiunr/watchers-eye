@@ -1,9 +1,9 @@
-package BigBrother::Collector::Twitter;
+package WatchersEye::Collector::Twitter;
 use Moo;
 use utf8;
 use AnyEvent;
 use Twitter::API;
-use BigBrother::Publisher::Discord;
+use WatchersEye::Publisher::Discord;
 use JSON::XS;
 use Encode 'encode_utf8';
 use feature 'say';

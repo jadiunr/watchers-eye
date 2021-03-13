@@ -1,8 +1,8 @@
-package BigBrother::Runner;
+package WatchersEye::Runner;
 use Moo;
 use utf8;
-use BigBrother::Collector;
-use BigBrother::Publisher;
+use WatchersEye::Collector;
+use WatchersEye::Publisher;
 use YAML::XS 'LoadFile';
 
 has settings => (
@@ -12,7 +12,7 @@ has settings => (
 has publisher => (
     is => 'ro',
     lazy => 1,
-    default => sub { BigBrother::Publisher->new(
+    default => sub { WatchersEye::Publisher->new(
         publishers => shift->settings->{publishers}
     ) }
 );
@@ -21,7 +21,7 @@ sub run {
     my $self = shift;
 
     for my $target (@{$self->settings->{targets}}) {
-        BigBrother::Collector->new(
+        WatchersEye::Collector->new(
             target => $target,
             cb => sub {
                 my $status = shift;

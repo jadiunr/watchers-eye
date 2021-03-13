@@ -4,7 +4,7 @@ services:
   app:
     build: .
     restart: always
-    command: carton exec perl big_brother
+    command: carton exec perl watchers_eye
     volumes:
       - .:/app
     stdin_open: true

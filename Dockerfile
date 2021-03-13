@@ -9,4 +9,4 @@ COPY cpanfile cpanfile.snapshot ./
 RUN carton install --deployment
 COPY . .
 
-CMD carton exec perl big_brother
+CMD carton exec perl watchers_eye

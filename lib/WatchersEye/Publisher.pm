@@ -1,7 +1,7 @@
-package BigBrother::Publisher;
+package WatchersEye::Publisher;
 use Moo;
 use utf8;
-use BigBrother::Publisher::Discord;
+use WatchersEye::Publisher::Discord;
 use Furl;
 use Encode 'encode_utf8';
 use File::Temp 'tempfile';
@@ -10,7 +10,7 @@ use HTTP::Request::Common;
 use feature 'say';
 
 has publishers => (is => 'ro');
-has discord => (is => 'ro', default => sub { BigBrother::Publisher::Discord->new });
+has discord => (is => 'ro', default => sub { WatchersEye::Publisher::Discord->new });
 
 sub publish {
     my ($self, $target, $status) = @_;

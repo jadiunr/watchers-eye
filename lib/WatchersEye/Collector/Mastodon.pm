@@ -1,4 +1,4 @@
-package BigBrother::Collector::Mastodon;
+package WatchersEye::Collector::Mastodon;
 use Moo;
 use utf8;
 use AnyEvent::WebSocket::Client;
