@@ -1,18 +1,31 @@
 targets:
 - kind: mastodon
-  label: someuser
-  domain: example.com
-  acct: user@example.com
+  label: sample_label1
+  domain: mastodon.example.jp
+  screen_name: sample_user
   credentials:
-    token: xxxxxxxx
+    token: xxxx
 - kind: twitter
-  label:
+  label: sample_label2
+  account_id: '1234567890'
   credentials:
-    ck:
-    cs:
-    at:
-    ats:
+    consumer_key: xxxx
+    consumer_secret: xxxx
+    access_token: xxxx
+    access_token_secret: xxxx
+- kind: misskey
+  label: sample_label3
+  domain: misskey.example.jp
+  screen_name: sample_user
+  credentials:
+    token: xxxx
 
 publishers:
-  kind: discord
-  webhook_url:
+- kind: discord
+  label: test_discord1
+  targets: [sample_label1, sample_label2]
+  webhook_url: https://discord.com/api/webhooks/xxxx/xxxx
+- kind: discord
+  label: test_discord2
+  targets: [sample_label3]
+  webhook_url: https://discord.com/api/webhooks/xxxx/xxxx
