@@ -15,7 +15,7 @@ has discord => (is => 'ro', default => sub { WatchersEye::Publisher::Discord->ne
 sub publish {
     my ($self, $target, $status) = @_;
 
-    say encode_utf8($status->{display_name}.' ('.$status->{screen_name}.')');
+    say encode_utf8($status->{display_name}.' ('.$status->{acct}.')');
     say encode_utf8 $status->{content};
 
     for my $publisher (@{$self->publishers}) {

@@ -12,7 +12,7 @@ has furl => (is => 'ro', default => sub {Furl->new});
 
 # $status: Hash Reference
 #   ->{display_name}
-#   ->{screen_name}
+#   ->{acct}
 #   ->{avatar_url}
 #   ->{content}
 #   ->{media_attachments}: Array Reference
@@ -26,7 +26,7 @@ sub publish {
         [
             avatar_url => encode_utf8($status->{avatar_url}),
             content => encode_utf8($status->{content}),
-            username => encode_utf8($status->{display_name} . " ($status->{screen_name})")
+            username => encode_utf8($status->{display_name} . " ($status->{acct})")
         ]
     );
 
@@ -44,7 +44,7 @@ sub publish {
                 'Content' => [
                     avatar_url => encode_utf8($status->{avatar_url}),
                     file => [$tmpfile],
-                    username => encode_utf8($status->{display_name} . " ($status->{screen_name})")
+                    username => encode_utf8($status->{display_name} . " ($status->{acct})")
                 ]
             ));
         }

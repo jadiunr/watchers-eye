@@ -45,10 +45,10 @@ sub run {
                 for my $status (@{$self->statuses}) {
                     my $media_attachments = [map { +{ url => $_->{media_url_https} } } @{$status->{extended_entities}{media}}];
                     $self->cb->({
-                        display_name => $status->{user}{name},
-                        screen_name  => $status->{user}{screen_name}.'@twitter.com',
-                        avatar_url   => $status->{user}{profile_image_url_https},
-                        content      => $status->{text},
+                        display_name      => $status->{user}{name},
+                        acct              => $status->{user}{screen_name}.'@twitter.com',
+                        avatar_url        => $status->{user}{profile_image_url_https},
+                        content           => $status->{text},
                         media_attachments => $media_attachments
                     });
                 }

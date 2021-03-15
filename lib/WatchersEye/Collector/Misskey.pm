@@ -42,10 +42,12 @@ sub run {
             my $status = $body->{body}{body};
             return if $status->{visibility} ne 'followers' and $self->target->{private_only};
 
-            if ((split /@/, $status->{user}{username})[0] eq $self->target->{screen_name}) {
+            my $acct = $status->{user}{username}. $status->{user}{host} ? '@'. $status->{user}{host} : (split /@/, $self->target->{acct})[1];
+
+            if ($acct eq $self->target->{acct}) {
                 $self->cb->({
                     display_name => $status->{user}{name},
-                    screen_name => $status->{user}{username},
+                    acct => $acct,
                     avatar_url => $status->{user}{avatarUrl},
                     content => $status->{text},
                     media_attachments => $status->{files}

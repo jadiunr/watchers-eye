@@ -39,10 +39,14 @@ sub run {
             $status->{content} =~ s/<(".*?"|'.*?'|[^'"])*?>//g;
             $status->{content} = decode_entities($status->{content});
 
-            if ((split /@/, $status->{account}{acct})[0] eq $self->target->{screen_name}) {
+            if ($status->{account}{acct} ne $self->target->{acct}) {
+                $status->{account}{acct} = $status->{account}{acct}. '@'. (split /@/, $self->target->{acct})[1];
+            }
+
+            if ($status->{account}{acct} eq $self->target->{acct}) {
                 $self->cb->({
                     display_name => $status->{account}{display_name},
-                    screen_name => $status->{account}{acct},
+                    acct => $status->{account}{acct},
                     avatar_url => $status->{account}{avatar},
                     content => $status->{content},
                     media_attachments => $status->{media_attachments}
