@@ -2,7 +2,7 @@ targets:
 - kind: mastodon
   label: sample_label1
   domain: mastodon.example.jp
-  screen_name: sample_user
+  acct: sample_user@mastodon.example.jp
   credentials:
     token: xxxx
 - kind: twitter
@@ -16,7 +16,8 @@ targets:
 - kind: misskey
   label: sample_label3
   domain: misskey.example.jp
-  screen_name: sample_user
+  acct: sample_user@misskey.example.jp
+  private_only: true
   credentials:
     token: xxxx
 
