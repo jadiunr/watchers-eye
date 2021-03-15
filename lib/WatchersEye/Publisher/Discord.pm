@@ -39,7 +39,7 @@ sub publish {
             print $tmpfh $binary->content;
             close $tmpfh;
             $self->furl->request(POST (
-                $self->webhook_url,
+                $webhook_url,
                 'Content-Type' => 'multipart/form-data',
                 'Content' => [
                     avatar_url => encode_utf8($status->{avatar_url}),
