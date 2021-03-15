@@ -39,7 +39,7 @@ sub run {
             $status->{content} =~ s/<(".*?"|'.*?'|[^'"])*?>//g;
             $status->{content} = decode_entities($status->{content});
 
-            if ($status->{account}{acct} ne $self->target->{acct}) {
+            if ($status->{account}{acct} !~ /\@/) {
                 $status->{account}{acct} = $status->{account}{acct}. '@'. (split /@/, $self->target->{acct})[1];
             }
 

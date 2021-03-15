@@ -42,7 +42,7 @@ sub run {
             my $status = $body->{body}{body};
             return if $status->{visibility} ne 'followers' and $self->target->{private_only};
 
-            my $acct = $status->{user}{username}. $status->{user}{host} ? '@'. $status->{user}{host} : (split /@/, $self->target->{acct})[1];
+            my $acct = $status->{user}{username}. (defined($status->{user}{host}) ? '@'. $status->{user}{host} : '@'. (split /@/, $self->target->{acct})[1]);
 
             if ($acct eq $self->target->{acct}) {
                 $self->cb->({
