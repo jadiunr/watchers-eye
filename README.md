@@ -62,7 +62,7 @@ Define the target to be surveilled.
 
 #### kind
 
-Specifies the type of service to which the surveilling target belongs.
+Specifies the type of service to which the surveilling target belongs.  
 Currently, Watcher's Eye supports the following three services.
 
 - mastodon
@@ -71,8 +71,13 @@ Currently, Watcher's Eye supports the following three services.
 
 #### label
 
-Assign a label to the surveilled object.
+Assign a label to the surveilled object.  
 This label will be used by Publisher.
+
+#### domain
+
+Specify the domain of the user who has the obtained API key. (i.e. you)  
+Note that this is not the domain to be surveilled.
 
 #### acct (Other than Twitter)
 
@@ -80,24 +85,24 @@ Specifies the acct to be surveilled.
 
 #### account_id (Twitter only)
 
-Specifies the account ID to be surveilled.
+Specifies the account ID to be surveilled.  
 Note that it is not the Screen Name.
 
 #### credentials
 
-Describe the Credentials for accessing the API.
+Describe the Credentials for accessing the API.  
 Use the correct key for each service.
 
 - Mastodon, Misskey
 
-```
+```yaml
   credentials:
     token: xxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
 - Twitter
 
-```
+```yaml
   credentials:
     consumer_key: xxxx
     consumer_secret: xxxx
@@ -107,7 +112,7 @@ Use the correct key for each service.
 
 #### private_only
 
-When enabled, only posts with Visibility equivalent to Private will be retrieved.
+When enabled, only posts with Visibility equivalent to Private will be retrieved.  
 This is not available for Twitter.
 
 ### publishers
@@ -116,7 +121,7 @@ Defines the forwarding destination for retrieved posts.
 
 #### kind
 
-Specify the type of service to be forwarded.
+Specify the type of service to be forwarded.  
 Currently, only Discord is supported, but soon Slack will be available as well.
 
 #### label
