@@ -16,6 +16,7 @@ has min_id => (is => 'rw');
 sub run {
     my $self = shift;
     my %furl_args;
+    $furl_args{agent} = 'Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101 Firefox/68.0 ';
     $furl_args{headers} = ['Authorization' => "Bearer ". $self->target->{credentials}{token}] unless $self->target->{no_auth};
     $furl_args{proxy} = 'http://tor:8118' if $self->target->{use_tor};
     my $furl = Furl->new(%furl_args);
