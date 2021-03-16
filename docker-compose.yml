@@ -9,3 +9,8 @@ services:
       - .:/app
     stdin_open: true
     tty: true
+    depends_on: [tor]
+  tor:
+    image: dperson/torproxy:latest
+    environment:
+      TZ: Asia/Tokyo

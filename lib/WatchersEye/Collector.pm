@@ -2,6 +2,7 @@ package WatchersEye::Collector;
 use Moo;
 use utf8;
 use WatchersEye::Collector::Mastodon;
+use WatchersEye::Collector::Mastodon::REST;
 use WatchersEye::Collector::Twitter;
 use WatchersEye::Collector::Misskey;
 
@@ -14,6 +15,11 @@ sub run {
 
     if ($self->target->{kind} eq 'mastodon') {
         $collector = WatchersEye::Collector::Mastodon->new(
+            target => $self->target,
+            cb => $self->cb
+        );
+    } elsif ($self->target->{kind} eq 'mastodon_rest') {
+        $collector = WatchersEye::Collector::Mastodon::REST->new(
             target => $self->target,
             cb => $self->cb
         );
