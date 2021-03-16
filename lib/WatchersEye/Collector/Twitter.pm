@@ -44,11 +44,17 @@ sub run {
             if (@{$self->statuses}) {
                 for my $status (@{$self->statuses}) {
                     my $media_attachments = [map { +{ url => $_->{media_url_https} } } @{$status->{extended_entities}{media}}];
+                    my $reply_user = $status->{in_reply_to_user_id};
+                    my $reply_status = $status->{in_reply_to_status_id};
+                    my $reply_url = ($reply_user and $reply_status)
+                        ? "\n\nIn reply to\nhttps://twitter.com/$reply_user/status/$reply_status"
+                        : '';
+
                     $self->cb->({
                         display_name      => $status->{user}{name},
                         acct              => $status->{user}{screen_name}.'@twitter.com',
                         avatar_url        => $status->{user}{profile_image_url_https},
-                        content           => $status->{text},
+                        content           => $status->{text}. $reply_url,
                         media_attachments => $media_attachments
                     });
                 }

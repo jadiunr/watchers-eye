@@ -21,7 +21,7 @@ sub publish {
     my ($self, $token, $channel, $status) = @_;
 
     $self->furl->post(
-        $webhook_url,
+        'https://slack.com/api/chat.postMessage',
         [],
         [
             token => $token,
@@ -41,7 +41,7 @@ sub publish {
             print $tmpfh $binary->content;
             close $tmpfh;
             $self->furl->request(POST (
-                $webhook_url,
+                'https://slack.com/api/files.upload',
                 'Content-Type' => 'multipart/form-data',
                 'Content' => [
                     token => $token,
