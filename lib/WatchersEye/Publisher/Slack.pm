@@ -42,7 +42,7 @@ sub publish {
             close $tmpfh;
             $self->furl->request(POST (
                 'https://slack.com/api/files.upload',
-                'Content-Type' => 'multipart/form-data',
+                'Content-Type' => 'form-data',
                 'Content' => [
                     token => $token,
                     channel => $channel,
