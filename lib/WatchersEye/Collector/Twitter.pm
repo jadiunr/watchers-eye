@@ -22,6 +22,7 @@ has twitter => (is => 'ro', lazy => 1, default => sub {
         access_token_secret => $self->target->{credentials}{access_token_secret}
     );
 });
+has timer => (is 'rw');
 
 sub run {
     my $self = shift;
@@ -32,7 +33,7 @@ sub run {
     $self->since_id($self->statuses->[0]{id});
 
     my $cv = AnyEvent->condvar;
-    our $t; $t = AnyEvent->timer(
+    $self->timer(AnyEvent->timer(
         after => 0,
         interval => 5,
         cb => sub {
@@ -61,7 +62,7 @@ sub run {
                 $self->since_id($self->statuses->[0]{id});
             }
         }
-    );
+    ));
 
     return $cv;
 }
