@@ -22,7 +22,7 @@ has twitter => (is => 'ro', lazy => 1, default => sub {
         access_token_secret => $self->target->{credentials}{access_token_secret}
     );
 });
-has timer => (is 'rw');
+has timer => (is => 'rw');
 
 sub run {
     my $self = shift;
