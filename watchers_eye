@@ -9,4 +9,5 @@ use WatchersEye::Runner;
 
 my $we = WatchersEye::Runner->new;
 
-$we->run;
+eval { $we->run };
+die $@ if $@;
