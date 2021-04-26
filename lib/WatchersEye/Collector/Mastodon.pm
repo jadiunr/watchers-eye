@@ -33,11 +33,21 @@ sub run {
             my $body = decode_json $message->{body};
             return if $body->{event} ne 'update';
             my $status = decode_json(encode_utf8 $body->{payload});
-            return if $status->{visibility} ne 'private' and $self->target->{private_only};
+
+            if (
+                ($status->{visibility} ne 'private') and
+                ($self->target->{private_only} eq 'true') and
+                !defined($self->{reblog})
+            ) {
+                return;
+            }
 
             $status->{content} =~ s/<(br|br \/|\/p)>/\n/g;
             $status->{content} =~ s/<(".*?"|'.*?'|[^'"])*?>//g;
             $status->{content} = decode_entities($status->{content});
+            if ($status->{reblog}) {
+                $status->{content} = 'BT @'. $status->{reblog}{account}{acct}. ': '. $status->{content};
+            }
 
             if ($status->{account}{acct} !~ /\@/) {
                 $status->{account}{acct} = $status->{account}{acct}. '@'. (split /\@/, $self->target->{acct})[1];
