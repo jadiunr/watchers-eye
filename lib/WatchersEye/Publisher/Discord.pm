@@ -20,15 +20,21 @@ has furl => (is => 'ro', default => sub {Furl->new});
 sub publish {
     my ($self, $webhook_url, $status) = @_;
 
-    $self->furl->post(
-        $webhook_url,
-        [],
-        [
-            avatar_url => encode_utf8($status->{avatar_url}),
-            content => encode_utf8($status->{content}),
-            username => encode_utf8($status->{display_name} . " ($status->{acct})")
-        ]
-    );
+    for my $try (1..5) {
+        my $res = $self->furl->post(
+            $webhook_url,
+            [],
+            [
+                avatar_url => encode_utf8($status->{avatar_url}),
+                content => encode_utf8($status->{content}),
+                username => encode_utf8($status->{display_name} . " ($status->{acct})")
+            ]
+        );
+        if ($res->status =~ /^2/) { last; }
+        else {
+            say "Got Status Code $res->status from Discord";
+        }
+    }
 
     if (@{$status->{media_attachments}}) {
         for my $media_attachment (@{$status->{media_attachments}}) {
@@ -38,15 +44,21 @@ sub publish {
             my ($tmpfh, $tmpfile) = tempfile(UNLINK => 1, SUFFIX => $ext);
             print $tmpfh $binary->content;
             close $tmpfh;
-            $self->furl->request(POST (
-                $webhook_url,
-                'Content-Type' => 'multipart/form-data',
-                'Content' => [
-                    avatar_url => encode_utf8($status->{avatar_url}),
-                    file => [$tmpfile],
-                    username => encode_utf8($status->{display_name} . " ($status->{acct})")
-                ]
-            ));
+            for my $try (1..5) {
+                my $res = $self->furl->request(POST (
+                    $webhook_url,
+                    'Content-Type' => 'multipart/form-data',
+                    'Content' => [
+                        avatar_url => encode_utf8($status->{avatar_url}),
+                        file => [$tmpfile],
+                        username => encode_utf8($status->{display_name} . " ($status->{acct})")
+                    ]
+                ));
+                if ($res->status == 200) { last; }
+                else {
+                    say "Got Status Code $res->status from Discord";
+                }
+            }
         }
     }
 }
