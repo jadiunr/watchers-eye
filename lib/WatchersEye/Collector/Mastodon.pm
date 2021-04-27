@@ -45,6 +45,11 @@ sub run {
             $status->{content} =~ s/<(br|br \/|\/p)>/\n/g;
             $status->{content} =~ s/<(".*?"|'.*?'|[^'"])*?>//g;
             $status->{content} = decode_entities($status->{content});
+
+            if ($status->{spoiler_text}) {
+                $status->{content} = 'CW: '. $status->{spoiler_text}. "\n\n". $status->{content};
+            }
+
             if ($status->{reblog}) {
                 $status->{content} = 'BT @'. $status->{reblog}{account}{acct}. ': '. $status->{content};
             }
