@@ -36,8 +36,7 @@ sub run {
 
             if (
                 ($status->{visibility} ne 'private') and
-                ($self->target->{private_only} eq 'true') and
-                !defined($self->{reblog})
+                ($self->target->{private_only} eq 'true')
             ) {
                 return;
             }
