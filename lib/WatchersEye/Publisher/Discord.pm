@@ -56,7 +56,7 @@ sub publish {
                 ));
                 if ($res->status == 200) { last; }
                 else {
-                    say "Got Status Code $res->status from Discord";
+                    say "Got Status Code ". $res->status. " from Discord";
                 }
             }
         }
