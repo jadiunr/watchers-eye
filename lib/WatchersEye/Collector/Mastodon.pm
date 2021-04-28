@@ -34,10 +34,7 @@ sub run {
             return if $body->{event} ne 'update';
             my $status = decode_json(encode_utf8 $body->{payload});
 
-            if (
-                ($status->{visibility} ne 'private') and
-                ($self->target->{private_only} eq 'true')
-            ) {
+            if ($status->{visibility} ne 'private' and $self->target->{private_only}) {
                 return;
             }
 
