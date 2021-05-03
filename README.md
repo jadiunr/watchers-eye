@@ -6,44 +6,39 @@ Watcher's Eye is a social network post surveillance tool.
 
 ## How to use
 
-Create `settings.yml` and write the following settings.
+Create the following configurations.
+
+- config/credentials.yml
 
 ```yaml
-targets:
-- kind: mastodon
-  label: gene_mastodon
-  domain: ap.jadiunr.net
-  acct: jadiunr@ap.jadiunr.net
-  credentials:
-    token: xxxxxxxxxxxxxxxxxxxxxxxx
-- kind: twitter
-  label: gene_twitter
-  account_id: '909813619868680194'
-  credentials:
-    consumer_key: xxxx
-    consumer_secret: xxxx
-    access_token: xxxx
-    access_token_secret: xxxx
-- kind: misskey
-  label: gene_misskey
-  domain: misskey.io
-  acct: jadiunr@misskey.io
-  private_only: true
-  credentials:
-    token: xxxxxxxxxxxxxxx
+mastodon_sample_creds: &mastodon_sample_creds
+  token: xxxx
 
-publishers:
+twitter_sample_creds: &twitter_sample_creds
+  consumer_key: xxxx
+  consumer_secret: xxxx
+  access_token: xxxx
+  access_token_secret: xxxx
+```
+
+- config/targets/sample.yml
+
+```yaml
+- kind: mastodon
+  label: sample_user
+  domain: example.com
+  acct: sample@example.com
+  credentials: *mastodon_sample_creds
+```
+
+- config/publishers/sample.yml
+
+```yaml
 - kind: discord
-  label: discord1
+  label: discord_sample
   targets:
-  - gene_mastodon
-  - gene_misskey
-  webhook_url: https://discord.com/api/webhooks/xxxxxxxxxxx
-- kind: discord
-  label: discord2
-  targets:
-  - gene_twitter
-  webhook_url: https://discord.com/api/webhooks/xxxxxxxxxxx
+  - sample_user
+  webhook_url: https://discord.com/api/webhooks/xxxx
 ```
 
 Then, run the Docker Container
@@ -115,6 +110,10 @@ Use the correct key for each service.
 When enabled, only posts with Visibility equivalent to Private will be retrieved.  
 This is not available for Twitter.
 
+#### use_tor
+
+Experimental.
+
 ### publishers
 
 Defines the forwarding destination for retrieved posts.
@@ -122,7 +121,10 @@ Defines the forwarding destination for retrieved posts.
 #### kind
 
 Specify the type of service to be forwarded.  
-Currently, only Discord is supported, but soon Slack will be available as well.
+Currently, Watcher's Eye supports the following two services.
+
+- discord
+- slack
 
 #### label
 
