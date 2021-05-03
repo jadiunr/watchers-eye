@@ -1,0 +1,5 @@
+- kind: mastodon
+  label: sample_user
+  domain: example.com
+  acct: sample@example.com
+  credentials: *mastodon_sample_creds

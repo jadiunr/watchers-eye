@@ -1,0 +1,5 @@
+- kind: discord
+  label: discord_sample
+  targets:
+  - sample_user
+  webhook_url: https://discord.com/api/webhooks/xxxx
