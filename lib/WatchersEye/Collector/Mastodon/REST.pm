@@ -24,6 +24,8 @@ sub run {
     $self->statuses(decode_json $furl->get($endpoint)->content);
     $self->min_id($self->statuses->[0]{id});
 
+    say $self->target->{label}. ": Connected.";
+
     my $cv = AnyEvent->condvar;
     our $t; $t = AnyEvent->timer(
         after => 0,

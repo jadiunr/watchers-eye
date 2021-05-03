@@ -32,6 +32,8 @@ sub run {
     }));
     $self->since_id($self->statuses->[0]{id});
 
+    say $self->target->{label}. ": Connected.";
+
     my $cv = AnyEvent->condvar;
     $self->timer(AnyEvent->timer(
         after => 0,

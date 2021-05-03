@@ -25,6 +25,8 @@ sub run {
         my $connection = eval{ shift->recv };
         die $@ if $@;
 
+        say $self->target->{label}. ": Connected.";
+
         $self->connection($connection);
 
         my $request = {
