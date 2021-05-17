@@ -28,7 +28,8 @@ sub run {
     my $self = shift;
 
     $self->statuses($self->twitter->user_timeline({
-        user_id => $self->target->{account_id}
+        user_id => $self->target->{account_id},
+        include_rts => $self->target->{include_rts} // 1,
     }));
     $self->since_id($self->statuses->[0]{id});
 
@@ -41,7 +42,8 @@ sub run {
         cb => sub {
             $self->statuses($self->twitter->user_timeline({
                 user_id => $self->target->{account_id},
-                since_id => $self->since_id
+                since_id => $self->since_id,
+                include_rts => $self->target->{include_rts} // 1,
             }));
 
             if (@{$self->statuses}) {
