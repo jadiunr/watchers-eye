@@ -24,7 +24,12 @@ sub run {
         "&stream=user"
     )->cb(sub {
         my $connection = eval{ shift->recv };
-        die $@ if $@;
+        if ($@) {
+            warn $self->target->{label}. ": Cannot connected! reason: $@";
+            sleep 5;
+            $self->run;
+            return;
+        }
 
         say $self->target->{label}. ": Connected.";
 
@@ -69,12 +74,14 @@ sub run {
 
         $connection->on(parse_error => sub {
             my ($connection, $message) = @_;
-            say $message;
+            warn $message;
+            $self->connection->close;
+            $self->run;
         });
 
         $connection->on(finish => sub {
             my $connection = shift;
-            say $connection->close_error;
+            warn $connection->close_error;
             $self->connection->close;
             $self->run;
         });

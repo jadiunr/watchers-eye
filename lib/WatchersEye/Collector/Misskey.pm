@@ -23,7 +23,12 @@ sub run {
         $self->target->{credentials}{token}
     )->cb(sub {
         my $connection = eval{ shift->recv };
-        die $@ if $@;
+        if ($@) {
+            warn $self->target->{label}. ": Cannot connected! reason: $@";
+            sleep 5;
+            $self->run;
+            return;
+        }
 
         say $self->target->{label}. ": Connected.";
 
@@ -57,7 +62,16 @@ sub run {
             }
         });
 
+        $connection->on(parse_error => sub {
+            my ($connection, $message) = @_;
+            warn $message;
+            $self->connection->close;
+            $self->run;
+        });
+
         $connection->on(finish => sub {
+            my $connection = shift;
+            warn $connection->close_error;
             $self->connection->close;
             $self->run;
         });
