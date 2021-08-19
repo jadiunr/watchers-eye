@@ -41,9 +41,8 @@ sub run {
             return if $body->{event} ne 'update';
             my $status = decode_json(encode_utf8 $body->{payload});
 
-            if ($status->{visibility} ne 'private' and $self->target->{private_only}) {
-                return;
-            }
+            return if ($status->{visibility} ne 'private' and $self->target->{private_only});
+            return if ($status->{reblog} and $self->target->{exclude_bts});
 
             $status->{content} =~ s/<(br|br \/|\/p)>/\n/g;
             $status->{content} =~ s/<(".*?"|'.*?'|[^'"])*?>//g;
@@ -54,7 +53,7 @@ sub run {
             }
 
             if ($status->{reblog}) {
-                $status->{content} = 'BT @'. $status->{reblog}{account}{acct}. ': '. $status->{content};
+                $status->{content} = 'BT '. $status->{reblog}{account}{acct}. ': '. $status->{content};
             }
 
             if ($status->{account}{acct} !~ /\@/) {
