@@ -32,7 +32,7 @@ sub publish {
         );
         if ($res->status =~ /^2/) { last; }
         else {
-            say "Got Status Code $res->status from Discord";
+            say "Got Status Code ". $res->status. " from Discord";
         }
     }
 
