@@ -32,7 +32,7 @@ sub publish {
         );
         if ($res->status =~ /^2/) { last; }
         else {
-            say "Got Status Code ". $res->status. " from Discord";
+            warn "Got Status Code ". $res->status. " from Discord.\n". $res->content;
         }
     }
 
@@ -56,7 +56,7 @@ sub publish {
                 ));
                 if ($res->status == 200) { last; }
                 else {
-                    say "Got Status Code ". $res->status. " from Discord";
+                    warn "Got Status Code ". $res->status. " from Discord.\n". $res->content;
                 }
             }
         }
