@@ -60,7 +60,7 @@ sub run {
                 $status->{account}{acct} = $status->{account}{acct}. '@'. (split /\@/, $self->target->{acct})[1];
             }
 
-            if ($status->{account}{url} =~ "\@@{[(split /\@/, $self->target->{acct})[0]]}" and $status->{account}{url} =~ (split /\@/, $self->target->{acct})[1]) {
+            if ($status->{account}{url} =~ (split /\@/, $self->target->{acct})[0] and $status->{account}{url} =~ (split /\@/, $self->target->{acct})[1]) {
                 $self->cb->({
                     display_name => $status->{account}{display_name},
                     acct => $status->{account}{acct},
