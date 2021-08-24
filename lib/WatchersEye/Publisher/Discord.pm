@@ -41,6 +41,7 @@ sub publish {
             say $media_attachment->{url};
             my $ext = (fileparse $media_attachment->{url}, qr/\..*$/)[2];
             my $binary = $self->furl->get($media_attachment->{url});
+            next if $binary->content =~ /timeout/;
             my ($tmpfh, $tmpfile) = tempfile(UNLINK => 1, SUFFIX => $ext);
             print $tmpfh $binary->content;
             close $tmpfh;
