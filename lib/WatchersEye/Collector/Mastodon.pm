@@ -60,6 +60,9 @@ sub run {
                 $status->{account}{acct} = $status->{account}{acct}. '@'. (split /\@/, $self->target->{acct})[1];
             }
 
+            # Discord 側でエスケープできなくてうっさいので苦肉の策として
+            $status->{content} =~ s/\@everyone/\@ everyone/g;
+
             if ($status->{account}{url} =~ (split /\@/, $self->target->{acct})[0] and $status->{account}{url} =~ (split /\@/, $self->target->{acct})[1]) {
                 $self->cb->({
                     display_name => $status->{account}{display_name},
