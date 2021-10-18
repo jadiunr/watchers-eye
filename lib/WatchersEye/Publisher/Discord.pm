@@ -15,6 +15,7 @@ has furl => (is => 'ro', default => sub {Furl->new});
 #   ->{acct}
 #   ->{avatar_url}
 #   ->{content}
+#   ->{visibility}
 #   ->{media_attachments}: Array Reference
 #     ->{url}
 sub publish {
@@ -27,7 +28,7 @@ sub publish {
             [
                 avatar_url => encode_utf8($status->{avatar_url}),
                 content => encode_utf8($status->{content}),
-                username => encode_utf8($status->{display_name} . " ($status->{acct})")
+                username => encode_utf8($status->{display_name}. " ($status->{acct})". "[$status->{visibility}]")
             ]
         );
         if ($res->status =~ /^2/) { last; }

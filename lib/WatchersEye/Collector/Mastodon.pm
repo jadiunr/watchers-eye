@@ -69,6 +69,7 @@ sub run {
                     acct => $status->{account}{acct},
                     avatar_url => $self->target->{avatar_url} || $status->{account}{avatar},
                     content => $status->{content},
+                    visibility => $status->{visibility},
                     media_attachments => $status->{media_attachments}
                 });
             }
