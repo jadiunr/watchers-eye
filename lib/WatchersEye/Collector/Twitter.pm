@@ -38,7 +38,7 @@ sub run {
     my $cv = AnyEvent->condvar;
     $self->timer(AnyEvent->timer(
         after => 0,
-        interval => 5,
+        interval => 10,
         cb => sub {
             $self->statuses($self->twitter->user_timeline({
                 user_id => $self->target->{account_id},

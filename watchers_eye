@@ -10,4 +10,4 @@ use WatchersEye::Runner;
 my $we = WatchersEye::Runner->new;
 
 eval { $we->run };
-die $@ if $@;
+die "FATAL:".$@ if $@;
