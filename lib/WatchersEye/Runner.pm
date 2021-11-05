@@ -6,23 +6,18 @@ use WatchersEye::Collector;
 use WatchersEye::Publisher;
 use YAML::XS 'LoadFile';
 
-has config => (
-    is => 'ro',
-    default => sub { WatchersEye::Config->load }
-);
-
 has publisher => (
     is => 'ro',
     lazy => 1,
     default => sub { WatchersEye::Publisher->new(
-        publishers => shift->config->{publishers}
+        publishers => $Config->{publishers}
     ) }
 );
 
 sub run {
     my $self = shift;
 
-    for my $target (@{$self->config->{targets}}) {
+    for my $target (@{$Config->{targets}}) {
         WatchersEye::Collector->new(
             target => $target,
             cb => sub {

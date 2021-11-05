@@ -7,11 +7,18 @@ use Furl;
 use Encode 'encode_utf8';
 use HTML::Entities 'decode_entities';
 use feature 'say';
+use WatchersEye::Config;
 
 has target => (is => 'ro');
 has cb => (is => 'ro');
 has statuses => (is => 'rw');
 has min_id => (is => 'rw');
+has interval => (is => 'ro', lazy => 1, default => sub {
+    my $self = shift;
+    my $using_token_count = grep {$self->target->{credentials}{token} eq $_->{credentials}{token}} @{$Config->{targets}};
+    return $using_token_count;
+});
+has timer => (is => 'rw');
 
 sub run {
     my $self = shift;
@@ -20,16 +27,17 @@ sub run {
     $furl_args{headers} = ['Authorization' => "Bearer ". $self->target->{credentials}{token}] unless $self->target->{no_auth};
     $furl_args{proxy} = 'http://tor:8118' if $self->target->{use_tor};
     my $furl = Furl->new(%furl_args);
-    my $endpoint = "https://". $self->target->{domain}. "/api/v1/accounts/". $self->target->{account_id}. "/statuses?limit=40&exclude_replies=false";
+    my $endpoint = sprintf "https://%s/api/v1/accounts/%s/statuses?limit=40&exclude_replies=%s&exclude_reblogs=%s",
+        $self->target->{domain}, $self->target->{account_id}, $self->target->{exclude_replies} ? 'true' : 'false', $self->target->{exclude_reblogs} ? 'true' : 'false';
     $self->statuses(decode_json $furl->get($endpoint)->content);
     $self->min_id($self->statuses->[0]{id});
 
-    say $self->target->{label}. ": Connected.";
+    say $self->target->{label}. ": Connected. interval=". $self->interval;
 
     my $cv = AnyEvent->condvar;
-    our $t; $t = AnyEvent->timer(
+    my $t = AnyEvent->timer(
         after => 0,
-        interval => 60,
+        interval => $self->interval,
         cb => sub {
             $self->statuses(decode_json $furl->get($endpoint. "&min_id=". $self->min_id)->content);
 
@@ -57,6 +65,8 @@ sub run {
             }
         }
     );
+
+    $self->timer($t);
 
     return $cv;
 }
