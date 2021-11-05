@@ -45,31 +45,34 @@ sub run {
         after => 0,
         interval => $self->interval,
         cb => sub {
-            $self->statuses($self->twitter->user_timeline({
-                user_id => $self->target->{account_id},
-                since_id => $self->since_id,
-                include_rts => $self->target->{include_rts} // 1,
-            }));
+            eval {
+                $self->statuses($self->twitter->user_timeline({
+                    user_id => $self->target->{account_id},
+                    since_id => $self->since_id,
+                    include_rts => $self->target->{include_rts} // 1,
+                }));
 
-            if (@{$self->statuses}) {
-                for my $status (@{$self->statuses}) {
-                    my $media_attachments = [map { +{ url => $_->{media_url_https} } } @{$status->{extended_entities}{media}}];
-                    my $reply_user = $status->{in_reply_to_user_id};
-                    my $reply_status = $status->{in_reply_to_status_id};
-                    my $reply_url = ($reply_user and $reply_status)
-                        ? "\n\nIn reply to\nhttps://twitter.com/$reply_user/status/$reply_status"
-                        : '';
+                if (@{$self->statuses}) {
+                    for my $status (@{$self->statuses}) {
+                        my $media_attachments = [map { +{ url => $_->{media_url_https} } } @{$status->{extended_entities}{media}}];
+                        my $reply_user = $status->{in_reply_to_user_id};
+                        my $reply_status = $status->{in_reply_to_status_id};
+                        my $reply_url = ($reply_user and $reply_status)
+                            ? "\n\nIn reply to\nhttps://twitter.com/$reply_user/status/$reply_status"
+                            : '';
 
-                    $self->cb->({
-                        display_name      => $status->{user}{name},
-                        acct              => $status->{user}{screen_name}.'@twitter.com',
-                        avatar_url        => $status->{user}{profile_image_url_https},
-                        content           => $status->{text}. $reply_url,
-                        media_attachments => $media_attachments
-                    });
+                        $self->cb->({
+                            display_name      => $status->{user}{name},
+                            acct              => $status->{user}{screen_name}.'@twitter.com',
+                            avatar_url        => $status->{user}{profile_image_url_https},
+                            content           => $status->{text}. $reply_url,
+                            media_attachments => $media_attachments
+                        });
+                    }
+                    $self->since_id($self->statuses->[0]{id});
                 }
-                $self->since_id($self->statuses->[0]{id});
-            }
+            };
+            say $@ if $@;
         }
     );
 
