@@ -3,15 +3,20 @@ use Moo;
 use utf8;
 use AnyEvent;
 use Twitter::API;
-use WatchersEye::Publisher::Discord;
 use JSON::XS;
 use Encode 'encode_utf8';
 use feature 'say';
+use WatchersEye::Config;
 
 has target => (is => 'ro');
 has cb => (is => 'ro');
 has statuses => (is => 'rw');
 has since_id => (is => 'rw');
+has interval => (is => 'ro', lazy => 1, default => sub {
+    my $self = shift;
+    my $using_token_count = grep {$self->target->{credentials}{access_token} eq $_->{credentials}{access_token}} @{$Config->{targets}};
+    return $using_token_count;
+});
 has twitter => (is => 'ro', lazy => 1, default => sub {
     my $self = shift;
     Twitter::API->new_with_traits(
@@ -33,12 +38,12 @@ sub run {
     }));
     $self->since_id($self->statuses->[0]{id});
 
-    say $self->target->{label}. ": Connected.";
+    say $self->target->{label}. ": Connected. interval=". $self->interval;
 
     my $cv = AnyEvent->condvar;
-    $self->timer(AnyEvent->timer(
+    my $t = AnyEvent->timer(
         after => 0,
-        interval => 10,
+        interval => $self->interval,
         cb => sub {
             $self->statuses($self->twitter->user_timeline({
                 user_id => $self->target->{account_id},
@@ -66,7 +71,9 @@ sub run {
                 $self->since_id($self->statuses->[0]{id});
             }
         }
-    ));
+    );
+
+    $self->timer($t);
 
     return $cv;
 }
