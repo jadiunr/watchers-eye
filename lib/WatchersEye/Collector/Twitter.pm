@@ -14,7 +14,7 @@ has statuses => (is => 'rw');
 has since_id => (is => 'rw');
 has interval => (is => 'ro', lazy => 1, default => sub {
     my $self = shift;
-    my $using_token_count = grep {$self->target->{credentials}{access_token} eq $_->{credentials}{access_token}} @{$Config->{targets}};
+    my $using_token_count = grep {defined($_->{credentials}{access_token}) and $self->target->{credentials}{access_token} eq $_->{credentials}{access_token}} @{$Config->{targets}};
     return $using_token_count;
 });
 has twitter => (is => 'ro', lazy => 1, default => sub {

@@ -21,7 +21,7 @@ sub publish {
     say encode_utf8 $status->{content};
 
     for my $publisher (@{$self->publishers}) {
-        if (grep {$_ eq $target->{label}} @{$publisher->{targets}}) {
+        if (grep {$_ eq $target->{label} or $_ eq 'all'} @{$publisher->{targets}}) {
             if ($publisher->{kind} eq 'discord') {
                 $self->discord->publish($publisher->{webhook_url}, $status);
             } elsif ($publisher->{kind} eq 'slack') {
