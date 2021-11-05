@@ -22,6 +22,8 @@ has timer => (is => 'rw');
 
 sub run {
     my $self = shift;
+    my $cv = AnyEvent->condvar;
+
     my %furl_args;
     $furl_args{agent} = 'Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101 Firefox/68.0 ';
     $furl_args{headers} = ['Authorization' => "Bearer ". $self->target->{credentials}{token}] unless $self->target->{no_auth};
@@ -29,12 +31,15 @@ sub run {
     my $furl = Furl->new(%furl_args);
     my $endpoint = sprintf "https://%s/api/v1/accounts/%s/statuses?limit=40&exclude_replies=%s&exclude_reblogs=%s",
         $self->target->{domain}, $self->target->{account_id}, $self->target->{exclude_replies} ? 'true' : 'false', $self->target->{exclude_reblogs} ? 'true' : 'false';
-    $self->statuses(decode_json $furl->get($endpoint)->content);
+    while (1) {
+        eval { $self->statuses(decode_json $furl->get($endpoint)->content) };
+        last unless $@;
+        sleep 5;
+    }
     $self->min_id($self->statuses->[0]{id});
 
     say $self->target->{label}. ": Connected. interval=". $self->interval;
 
-    my $cv = AnyEvent->condvar;
     my $t = AnyEvent->timer(
         after => 0,
         interval => $self->interval,

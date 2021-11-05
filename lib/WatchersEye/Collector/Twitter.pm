@@ -20,7 +20,7 @@ has interval => (is => 'ro', lazy => 1, default => sub {
 has twitter => (is => 'ro', lazy => 1, default => sub {
     my $self = shift;
     Twitter::API->new_with_traits(
-        traits              => 'Enchilada',
+        traits              => ['Enchilada', 'RateLimiting'],
         consumer_key        => $self->target->{credentials}{consumer_key},
         consumer_secret     => $self->target->{credentials}{consumer_secret},
         access_token        => $self->target->{credentials}{access_token},
@@ -31,6 +31,7 @@ has timer => (is => 'rw');
 
 sub run {
     my $self = shift;
+    my $cv = AnyEvent->condvar;
 
     $self->statuses($self->twitter->user_timeline({
         user_id => $self->target->{account_id},
@@ -40,7 +41,6 @@ sub run {
 
     say $self->target->{label}. ": Connected. interval=". $self->interval;
 
-    my $cv = AnyEvent->condvar;
     my $t = AnyEvent->timer(
         after => 0,
         interval => $self->interval,
