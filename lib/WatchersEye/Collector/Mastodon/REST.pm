@@ -44,22 +44,36 @@ sub run {
             if (@{$self->statuses}) {
                 for my $status (@{$self->statuses}) {
                     next if $status->{visibility} ne 'private' and $self->target->{private_only};
+                    next if $status->{reblog} and $self->target->{exclude_reblogs};
 
                     $status->{content} =~ s/<(br|br \/|\/p)>/\n/g;
                     $status->{content} =~ s/<(".*?"|'.*?'|[^'"])*?>//g;
                     $status->{content} = decode_entities($status->{content});
 
-                    if ($status->{account}{acct} !~ /\@/) {
-                        $status->{account}{acct} = $status->{account}{acct}. '@'. $self->target->{domain};
+                    if ($status->{spoiler_text}) {
+                        $status->{content} = 'CW: '. $status->{spoiler_text}. "\n\n". $status->{content};
                     }
 
-                    $self->cb->({
-                        display_name => $status->{account}{display_name},
-                        acct => $status->{account}{acct},
-                        avatar_url => $status->{account}{avatar},
-                        content => $status->{content},
-                        media_attachments => $status->{media_attachments}
-                    });
+                    if ($status->{reblog}) {
+                        $status->{content} = 'BT '. $status->{reblog}{account}{acct}. ': '. $status->{content};
+                    }
+
+                    if ($status->{account}{acct} !~ /\@/) {
+                        $status->{account}{acct} = $status->{account}{acct}. '@'. (split /\@/, $self->target->{acct})[1];
+                    }
+
+                    $status->{content} =~ s/\@everyone/\@ everyone/g;
+
+                    if ($status->{account}{url} =~ (split /\@/, $self->target->{acct})[0] and $status->{account}{url} =~ (split /\@/, $self->target->{acct})[1]) {
+                        $self->cb->({
+                            display_name => $status->{account}{display_name},
+                            acct => $status->{account}{acct},
+                            avatar_url => $self->target->{avatar_url} || $status->{account}{avatar},
+                            content => $status->{content},
+                            visibility => $status->{visibility},
+                            media_attachments => $status->{media_attachments}
+                        });
+                    }
                 }
                 $self->min_id($self->statuses->[0]{id});
             }
