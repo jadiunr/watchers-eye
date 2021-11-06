@@ -16,7 +16,7 @@ has min_id => (is => 'rw');
 has interval => (is => 'ro', lazy => 1, default => sub {
     my $self = shift;
     my $using_token_count = grep {defined($_->{credentials}{token}) and $self->target->{credentials}{token} eq $_->{credentials}{token}} @{$Config->{targets}};
-    return $using_token_count;
+    return $using_token_count * 5;
 });
 has timer => (is => 'rw');
 
