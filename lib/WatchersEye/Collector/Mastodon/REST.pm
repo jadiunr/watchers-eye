@@ -31,12 +31,6 @@ sub run {
     my $furl = Furl->new(%furl_args);
     my $endpoint = sprintf "https://%s/api/v1/accounts/%s/statuses?limit=40&exclude_replies=%s&exclude_reblogs=%s",
         $self->target->{domain}, $self->target->{account_id}, $self->target->{exclude_replies} ? 'true' : 'false', $self->target->{exclude_reblogs} ? 'true' : 'false';
-    while (1) {
-        eval { $self->statuses(decode_json $furl->get($endpoint)->content) };
-        last unless $@;
-        sleep 5;
-    }
-    $self->min_id($self->statuses->[0]{id});
 
     say $self->target->{label}. ": Connected. interval=". $self->interval;
 
@@ -45,7 +39,13 @@ sub run {
         interval => $self->interval,
         cb => sub {
             eval {
-                $self->statuses(decode_json $furl->get($endpoint. "&min_id=". $self->min_id)->content);
+                if ($self->min_id) {
+                    $self->statuses(decode_json $furl->get($endpoint. "&min_id=". $self->min_id)->content);
+                } else {
+                    $self->statuses(decode_json $furl->get($endpoint)->content);
+                    $self->min_id($self->statuses->[0]{id});
+                    return;
+                }
 
                 if (@{$self->statuses}) {
                     for my $status (@{$self->statuses}) {
