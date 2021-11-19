@@ -78,10 +78,11 @@ Note that this is not the domain to be surveilled.
 
 Specifies the acct to be surveilled.
 
-#### account_id (Twitter only)
+#### account_id
 
 Specifies the account ID to be surveilled.  
 Note that it is not the Screen Name.
+In the case of Mastodon, it is only used in the REST API.
 
 #### credentials
 
