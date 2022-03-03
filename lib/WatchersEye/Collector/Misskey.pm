@@ -55,7 +55,7 @@ sub run {
                 $self->cb->({
                     display_name => $status->{user}{name},
                     acct => $acct,
-                    avatar_url => $status->{user}{avatarUrl},
+                    avatar_url => $self->target->{avatar_url} || $status->{user}{avatarUrl},
                     content => $status->{text},
                     media_attachments => $status->{files}
                 });

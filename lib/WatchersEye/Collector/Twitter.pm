@@ -64,7 +64,7 @@ sub run {
                         $self->cb->({
                             display_name      => $status->{user}{name},
                             acct              => $status->{user}{screen_name}.'@twitter.com',
-                            avatar_url        => $status->{user}{profile_image_url_https},
+                            avatar_url        => $self->target->{avatar_url} || $status->{user}{profile_image_url_https},
                             content           => $status->{text}. $reply_url,
                             media_attachments => $media_attachments
                         });
