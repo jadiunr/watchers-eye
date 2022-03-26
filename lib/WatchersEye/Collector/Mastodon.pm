@@ -62,6 +62,7 @@ sub run {
 
             # Discord 側でエスケープできなくてうっさいので苦肉の策として
             $status->{content} =~ s/\@everyone/\@ everyone/g;
+            $status->{content} =~ s/\@here/\@ here/g;
 
             if ($status->{account}{url} =~ (split /\@/, $self->target->{acct})[0] and $status->{account}{url} =~ (split /\@/, $self->target->{acct})[1]) {
                 $self->cb->({
