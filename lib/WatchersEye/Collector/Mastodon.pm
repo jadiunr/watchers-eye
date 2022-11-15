@@ -44,10 +44,6 @@ sub run {
             return if ($status->{visibility} ne 'private' and $self->target->{private_only});
             return if ($status->{reblog} and $self->target->{exclude_bts});
 
-            $status->{content} =~ s/<(br|br \/|\/p)>/\n/g;
-            $status->{content} =~ s/<(".*?"|'.*?'|[^'"])*?>//g;
-            $status->{content} = decode_entities($status->{content});
-
             if ($status->{spoiler_text}) {
                 $status->{content} = 'CW: '. $status->{spoiler_text}. "\n\n". $status->{content};
             }
@@ -61,6 +57,9 @@ sub run {
                 $status->{account}{acct} = $status->{account}{acct}. '@'. (split /\@/, $self->target->{acct})[1];
             }
 
+            $status->{content} =~ s/<(br|br \/|\/p)>/\n/g;
+            $status->{content} =~ s/<(".*?"|'.*?'|[^'"])*?>//g;
+            $status->{content} = decode_entities($status->{content});
             # Discord 側でエスケープできなくてうっさいので苦肉の策として
             $status->{content} =~ s/\@everyone/\@ everyone/g;
             $status->{content} =~ s/\@here/\@ here/g;
