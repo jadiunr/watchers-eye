@@ -10,6 +10,7 @@ use HTML::Entities 'decode_entities';
 has target => (is => 'ro');
 has cb => (is => 'ro');
 has connection => (is => 'rw');
+has heartbeat_timer => (is => 'rw');
 
 sub run {
     my $self = shift;
@@ -89,6 +90,16 @@ sub run {
             $self->connection->close;
             $self->run;
         });
+
+        my $t = AnyEvent->timer(
+            after => 30,
+            interval => 30,
+            cb => sub {
+                $self->connection->send(AnyEvent::WebSocket::Message->new(opcode => 9, body => ''));
+            },
+        );
+
+        $self->heartbeat_timer($t);
     });
 
     return $cv;
