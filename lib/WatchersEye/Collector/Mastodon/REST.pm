@@ -35,7 +35,7 @@ sub run {
     say $self->target->{label}. ": Connected. interval=". $self->interval;
 
     my $t = AnyEvent->timer(
-        after => 0,
+        after => $self->interval,
         interval => $self->interval,
         cb => sub {
             eval {
