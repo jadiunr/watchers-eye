@@ -35,6 +35,8 @@ sub run {
 
     $self->statuses($self->twitter->user_timeline({
         user_id => $self->target->{account_id},
+        tweet_mode  => 'extended',
+        include_ext_alt_text => 1,
         include_rts => $self->target->{include_rts} // 1,
     }));
     $self->since_id($self->statuses->[0]{id});
@@ -49,6 +51,8 @@ sub run {
                 $self->statuses($self->twitter->user_timeline({
                     user_id => $self->target->{account_id},
                     since_id => $self->since_id,
+                    tweet_mode  => 'extended',
+                    include_ext_alt_text => 1,
                     include_rts => $self->target->{include_rts} // 1,
                 }));
 
@@ -57,16 +61,21 @@ sub run {
                         my $media_attachments = [map { +{ url => $_->{media_url_https} } } @{$status->{extended_entities}{media}}];
                         my $reply_user = $status->{in_reply_to_user_id};
                         my $reply_status = $status->{in_reply_to_status_id};
-                        my $reply_url = ($reply_user and $reply_status)
-                            ? "\n\nIn reply to\nhttps://twitter.com/$reply_user/status/$reply_status"
-                            : '';
+                        $status->{full_text} .= ($reply_user and $reply_status)
+                            ? "\n\nIn reply to https://twitter.com/$reply_user/status/$reply_status\n"
+                            : "\n";
+                        for my $media (@{$status->{extended_entities}{media}}) {
+                            next unless $media->{ext_alt_text};
+                            $status->{full_text} .= "\n\nALT: ". $media->{ext_alt_text}. "\n";
+                        }
 
                         $self->cb->({
                             display_name      => $status->{user}{name},
                             acct              => $status->{user}{screen_name}.'@twitter.com',
                             avatar_url        => $self->target->{avatar_url} || $status->{user}{profile_image_url_https},
-                            content           => $status->{text}. $reply_url,
-                            media_attachments => $media_attachments
+                            content           => $status->{full_text},
+                            visibility        => $status->{user}{protected} ? 'private' : 'public',
+                            media_attachments => $media_attachments,
                         });
                     }
                     $self->since_id($self->statuses->[0]{id});
