@@ -53,7 +53,8 @@ sub run {
             }
 
             if ($status->{reblog}) {
-                $status->{content} = 'BT '. $status->{reblog}{account}{acct}. ': '. $status->{content};
+                $status->{content} = 'BT '. $status->{reblog}{account}{acct}. ': '. $status->{reblog}{content};
+                $status->{media_attachments} = $status->{reblog}{media_attachments};
             }
 
             if ($status->{account}{acct} !~ /\@/) {
