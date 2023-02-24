@@ -5,6 +5,7 @@ use WatchersEye::Config;
 use WatchersEye::Collector;
 use WatchersEye::Publisher;
 use YAML::XS 'LoadFile';
+use Parallel::ForkManager;
 
 has publisher => (
     is => 'ro',
@@ -17,7 +18,9 @@ has publisher => (
 sub run {
     my $self = shift;
 
+    my $pm = Parallel::ForkManager->new(4);
     for my $target (@{$Config->{targets}}) {
+        $pm->start and next;
         WatchersEye::Collector->new(
             target => $target,
             cb => sub {
@@ -25,6 +28,7 @@ sub run {
                 $self->publisher->publish($target, $status);
             }
         )->run;
+        $pm->finish;
     }
 
     AnyEvent->condvar->recv;
