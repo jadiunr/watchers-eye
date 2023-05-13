@@ -1,4 +1,4 @@
-package WatchersEye::Collector::Mastodon::REST;
+package WatchersEye::Collector::MastodonREST;
 use Moo;
 use utf8;
 use AnyEvent;
