@@ -52,6 +52,7 @@ sub run {
             if ($status->{reblog}) {
                 $status->{content} = 'BT '. $status->{reblog}{account}{acct}. ': '. $status->{reblog}{content};
                 $status->{media_attachments} = $status->{reblog}{media_attachments};
+                $status->{url} = $status->{reblog}{url};
             }
 
             if ($status->{account}{acct} !~ /\@/) {
@@ -61,6 +62,7 @@ sub run {
             $status->{content} =~ s/<(br|br \/|\/p)>/\n/g;
             $status->{content} =~ s/<(".*?"|'.*?'|[^'"])*?>//g;
             $status->{content} = decode_entities($status->{content});
+            $status->{content} .= "\nOrig URL: ". $status->{url};
             # Discord 側でエスケープできなくてうっさいので苦肉の策として
             $status->{content} =~ s/\@everyone/\@ everyone/g;
             $status->{content} =~ s/\@here/\@ here/g;
