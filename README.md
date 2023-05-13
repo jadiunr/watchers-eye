@@ -61,8 +61,10 @@ Specifies the type of service to which the surveilling target belongs.
 Currently, Watcher's Eye supports the following three services.
 
 - mastodon
+- mastodon_rest
 - misskey
 - twitter
+- twitter_v2
 
 #### label
 
