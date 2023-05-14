@@ -89,7 +89,7 @@ sub run {
                         my $status_url = "ttps://twitter.com/". $status->{author_id}. "/status/". $status->{id};
                         $status->{text} .= "Orig URL: $status_url";
 
-                        my $user = grep { $status->{author_id} eq $_->{id} } @{ $self->statuses->{includes}{users} };
+                        my ($user) = grep { $status->{author_id} eq $_->{id} } @{ $self->statuses->{includes}{users} };
                         $status->{user}{name} = $user->{name};
                         $status->{user}{screen_name} = $user->{username};
                         $status->{user}{profile_image_url_https} = $user->{profile_image_url};
