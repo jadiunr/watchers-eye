@@ -84,7 +84,7 @@ sub run {
                         }
 
                         my $status_url = "ttps://twitter.com/". $status->{user}{screen_name}. "/status/". $status->{id_str};
-                        $status->{full_text} .= "Orig URL: $status_url\n";
+                        $status->{full_text} .= "\nOrig URL: $status_url\n";
 
                         $self->cb->({
                             display_name      => $status->{user}{name},
