@@ -50,7 +50,7 @@ sub run {
                 }));
 
                 unless ($self->initialized) {
-                    $self->since_id($self->statuses->[0]{id});
+                    $self->since_id($self->statuses->[0]{id_str});
                     $self->initialized(1);
                     say $self->target->{label}. ': Initialized';
                     return;
@@ -83,6 +83,9 @@ sub run {
                             $status->{full_text} .= "\n\nALT: ". $media->{ext_alt_text}. "\n";
                         }
 
+                        my $status_url = "ttps://twitter.com/". $status->{user}{screen_name}. "/status/". $status->{id_str};
+                        $status->{full_text} .= "Orig URL: $status_url\n";
+
                         $self->cb->({
                             display_name      => $status->{user}{name},
                             acct              => $status->{user}{screen_name}.'@twitter.com',
@@ -92,7 +95,7 @@ sub run {
                             media_attachments => $media_attachments,
                         });
                     }
-                    $self->since_id($self->statuses->[0]{id});
+                    $self->since_id($self->statuses->[0]{id_str});
                 }
             };
             say $self->target->{label}. ': '. $@ if $@;

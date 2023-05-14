@@ -55,6 +55,7 @@ sub run {
                         $status->{content} =~ s/<(br|br \/|\/p)>/\n/g;
                         $status->{content} =~ s/<(".*?"|'.*?'|[^'"])*?>//g;
                         $status->{content} = decode_entities($status->{content});
+                        $status->{content} .= "\nOrig URL: ". substr($status->{url}, 1);
 
                         if ($status->{spoiler_text}) {
                             $status->{content} = 'CW: '. $status->{spoiler_text}. "\n\n". $status->{content};

@@ -62,7 +62,7 @@ sub run {
             $status->{content} =~ s/<(br|br \/|\/p)>/\n/g;
             $status->{content} =~ s/<(".*?"|'.*?'|[^'"])*?>//g;
             $status->{content} = decode_entities($status->{content});
-            $status->{content} .= "\nOrig URL: ". $status->{url};
+            $status->{content} .= "\nOrig URL: ". substr($status->{url}, 1);
             # Discord 側でエスケープできなくてうっさいので苦肉の策として
             $status->{content} =~ s/\@everyone/\@ everyone/g;
             $status->{content} =~ s/\@here/\@ here/g;
