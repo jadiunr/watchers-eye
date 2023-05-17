@@ -8,6 +8,12 @@ Watcher's Eye is a social network post surveillance tool.
 
 Create the following configurations.
 
+- config/global.yml
+
+```yaml
+collector_processes: auto
+```
+
 - config/credentials.yml
 
 ```yaml
@@ -50,6 +56,12 @@ docker-compose up -d
 ```
 
 ## Configuration details
+
+### collector_processes
+
+Specify the number of Collector processes to run in multiprocesses.
+
+- auto: Use the `nproc` command to automatically set the maximum number of processors.
 
 ### targets
 

@@ -1,4 +1,4 @@
-FROM perl:5.32.1
+FROM perl:5.32.1-threaded
 
 ENV LANG C.UTF-8
 

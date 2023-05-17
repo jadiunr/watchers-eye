@@ -7,6 +7,7 @@ requires 'AnyEvent::WebSocket::Client';
 requires 'HTTP::Request::Common';
 requires 'Twitter::API';
 requires 'HTML::Entities';
+requires 'Parallel::ForkManager';
 
 on 'develop' => sub {
   requires 'Pry';

@@ -5,12 +5,21 @@ use utf8;
 use YAML::XS 'Load';
 use Exporter 'import';
 
-my $yaml;
+my $yaml = '';
 
-open my $fh, '<', 'config/credentials.yml';
-$yaml .= do { local $/; <$fh> };
-$yaml .= "\n";
-close $fh;
+{
+    open my $fh, '<', 'config/global.yml';
+    $yaml .= do { local $/; <$fh> };
+    $yaml .= "\n";
+    close $fh;
+}
+
+{
+    open my $fh, '<', 'config/credentials.yml';
+    $yaml .= do { local $/; <$fh> };
+    $yaml .= "\n";
+    close $fh;
+}
 
 $yaml .= "\ntargets:\n";
 for my $target (glob "config/targets/*.yml") {
@@ -27,8 +36,6 @@ for my $publisher (glob "config/publishers/*.yml") {
     $yaml .= "\n";
     close $fh;
 }
-
-print $yaml;
 
 our @EXPORT = qw/$Config/;
 our $Config = Load $yaml;
